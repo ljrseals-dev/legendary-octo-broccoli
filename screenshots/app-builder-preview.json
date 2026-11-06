@@ -1,0 +1,39 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Harmonia Lattice",
+      "hasCanvas": true,
+      "bodyTextLen": 1799,
+      "bodyTextHash": "729428f8ce07dd4c13b4591e3d04ab4a8987d6b0632a8c90c0b0ed5918f38c6e",
+      "bodyTextPrefix": "THEREALLA Harmonia Lattice Aura takes the organ’s place. Harmoni",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Harmonia Lattice",
+      "hasCanvas": true,
+      "bodyTextLen": 1799,
+      "bodyTextHash": "729428f8ce07dd4c13b4591e3d04ab4a8987d6b0632a8c90c0b0ed5918f38c6e",
+      "bodyTextPrefix": "THEREALLA Harmonia Lattice Aura takes the organ’s place. Harmoni",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [
+    "BRAND WARNING: this looks like a game/canvas app but src/lib/og/site.json is missing \"type\": \"x:game\". X uses og:type=x:game to present the unfurl as a game card — set it in /workspace/src/lib/og/site.json per /workspace/.grok/skills/og/SKILL.md. Do not invent x:type or overload twitter:card as the game signal.",
+    "BRAND WARNING: this looks like a game/canvas app but /workspace/public/x-banner.jpg is missing. Games need a 50:11 X feed card (1200×264 JPEG) at public/x-banner.jpg — open /workspace/.grok/skills/og/SKILL.md and finish the brand-asset pass."
+  ],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
