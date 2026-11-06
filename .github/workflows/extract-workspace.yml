@@ -1,0 +1,67 @@
+name: Extract workspace archive
+
+on:
+  push:
+    branches:
+      - import/extract-grok-workspace
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    if: "!contains(github.event.head_commit.message, '[archive extracted]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out import branch
+        uses: actions/checkout@v4
+        with:
+          ref: import/extract-grok-workspace
+          persist-credentials: true
+      - name: Safely extract workspace files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import stat
+
+          archive = Path("grok-workspace.zip")
+          if not archive.is_file():
+              raise SystemExit("Expected grok-workspace.zip at repository root")
+
+          root = Path.cwd().resolve()
+          with ZipFile(archive) as zf:
+              for info in zf.infolist():
+                  name = info.filename
+                  rel = PurePosixPath(name)
+                  if rel.is_absolute() or any(part in ("..", "") for part in rel.parts):
+                      raise SystemExit(f"Unsafe archive path: {name!r}")
+                  mode = info.external_attr >> 16
+                  if stat.S_ISLNK(mode):
+                      raise SystemExit(f"Symlink entry rejected: {name!r}")
+                  target = (root / Path(*rel.parts)).resolve()
+                  if target != root and root not in target.parents:
+                      raise SystemExit(f"Archive path escapes repository: {name!r}")
+                  if info.is_dir():
+                      target.mkdir(parents=True, exist_ok=True)
+                      continue
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with zf.open(info) as src, target.open("wb") as dst:
+                      while chunk := src.read(1024 * 1024):
+                          dst.write(chunk)
+
+          archive.unlink()
+          PY
+      - name: Commit extracted project files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No extracted changes to commit"
+            exit 0
+          fi
+          git commit -m "Extract Grok workspace archive [archive extracted]"
+          git push origin HEAD:import/extract-grok-workspace
